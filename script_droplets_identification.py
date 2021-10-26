@@ -2,7 +2,11 @@
 
 import cv2 as cv
 import numpy as np
+from math import isclose
+import time
 import matplotlib.pyplot as plt
+
+start = time.time()
 
 # Default path to input data and output folder
 
@@ -34,8 +38,13 @@ image_complete = background.copy()
 # Defining the size of the mask
 
 # Inform the number of divisions (must be greater than 4)
-hor_div = 20
-ver_div = 20
+
+hor_div = 6
+ver_div = 6
+
+# Conversion factor
+
+conversion_factor = 200/277
 
 size = [round(height / (ver_div - 1)), round(width / (hor_div - 1))]
 
@@ -73,9 +82,18 @@ for i in range(len(ver_pos)):
 hor_pos = hor_pos.astype(int)
 ver_pos = ver_pos.astype(int)
 
+# Creating an empty list
+
+diameter = []
+x1_pos = []
+y1_pos = []
+
 # Identifying circles with Hough Circle Transform for every part of image
 
-i = 0
+j = 0
+contx = 0
+conty = 0
+
 for i in range(len(hor_pos)):
     # color specified the color of border line of rectangle to be draw
     # if thickness = -1 px will fill the rectangle shape by the specified color
@@ -95,19 +113,40 @@ for i in range(len(hor_pos)):
         circles = np.uint16(np.around(circles))
 
         for i in circles[0, :]:
-            # circle center
-            center = (i[0], i[1])
 
-            # circle outline
-            cv.circle(or_image, center, 1, (0, 100, 100), 3)
-            radius = i[2]
-            cv.circle(or_image, center, radius, (255, 0, 0), 3)
+            for item in x1_pos:
+                if isclose(i[0], item, rel_tol=0.005, abs_tol=0) == True:
+                    contx += 1
+
+            for item in y1_pos:
+                if isclose(i[1], item, rel_tol=0.005, abs_tol=0) == True:
+                    conty += 1
+
+            if (contx == 0 and conty == 0) == True:
+                diameter.append(i[2] * 2)
+                x1_pos.append(i[0])
+                y1_pos.append(i[1])
+                contx = 0
+                conty = 0
+            contx = 0
+            conty = 0
 
     background = np.zeros([height, width], np.uint8)
     i += 1
-    # Show inside the "for"
-    #cv.imshow('', proc_image)
+    # Show figure inside "for"
+    #cv.imshow('', or_image)
     #cv.waitKey()
+
+# Drawing circles if any number of circles was identified
+
+#i = 0
+for i in range(len(x1_pos)):
+    cv.circle(or_image, (int(x1_pos[i]),int(y1_pos[i])), 1, (0, 100, 100), 3)
+    # circle outline
+    cv.circle(or_image, (int(x1_pos[i]),int(y1_pos[i])), int((diameter[i]/2)), (255, 0, 0), 3)
+    i += 1
+
+diameter = np.array(diameter) * conversion_factor
 
 # Showing the image with the droplets identified
 
@@ -117,7 +156,22 @@ for i in range(len(hor_pos)):
 # Writing the test name
 
 path_f = 'results/' + test_name + '_hordiv' + str(hor_div) + '_verdiv' + str(ver_div) + '.png'
+path_f2 = 'results/' + test_name + '_hordiv' + str(hor_div) + '_verdiv' + str(ver_div) + '.txt'
+
+# Saving a file with the droplets diameters
+
+textfile = open(path_f2, 'w')
+for element in diameter:
+    textfile.write(str(element) + ',')
 
 # Saving the image
 
 cv.imwrite(path_f, or_image)
+
+end = time.time()
+
+print('Time spend:', round(end - start, 2), 's')
+print('\nNumber of droplets identified:', len(x1_pos), 'droplets')
+print('\nMaximum diameter:', round(max(diameter),2), '\u03BCm')
+diameter = set(diameter)
+print('\nMinimum diameter:', round(sorted(diameter)[1],2), '\u03BCm')
