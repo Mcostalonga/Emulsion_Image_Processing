@@ -6,6 +6,8 @@ from math import isclose
 import time
 import matplotlib.pyplot as plt
 
+savefile = input('Would you like to save the processed image? Type "Y" for "yes", "N" for "no" \n')
+
 start = time.time()
 
 # Default path to input data and output folder
@@ -39,8 +41,8 @@ image_complete = background.copy()
 
 # Inform the number of divisions (must be greater than 4)
 
-hor_div = 6
-ver_div = 6
+hor_div = 10
+ver_div = 10
 
 # Conversion factor
 
@@ -143,7 +145,7 @@ for i in range(len(hor_pos)):
 for i in range(len(x1_pos)):
     cv.circle(or_image, (int(x1_pos[i]),int(y1_pos[i])), 1, (0, 100, 100), 3)
     # circle outline
-    cv.circle(or_image, (int(x1_pos[i]),int(y1_pos[i])), int((diameter[i]/2)), (255, 0, 0), 3)
+    cv.circle(or_image, (int(x1_pos[i]),int(y1_pos[i])), int((diameter[i]/2)), (255, 0, 255), 3)
     i += 1
 
 diameter = np.array(diameter) * conversion_factor
@@ -166,12 +168,16 @@ for element in diameter:
 
 # Saving the image
 
-cv.imwrite(path_f, or_image)
+if (savefile == 'Y' or savefile == 'y') == True:
+    cv.imwrite(path_f, or_image)
 
 end = time.time()
 
 print('Time spend:', round(end - start, 2), 's')
 print('\nNumber of droplets identified:', len(x1_pos), 'droplets')
 print('\nMaximum diameter:', round(max(diameter),2), '\u03BCm')
-diameter = set(diameter)
-print('\nMinimum diameter:', round(sorted(diameter)[1],2), '\u03BCm')
+if min(diameter) == 0:
+    diameter = set(diameter)
+    print('\nMinimum diameter:', round(sorted(diameter)[1],2), '\u03BCm')
+else:
+    print('\nMinimum diameter:', round(min(diameter), 2), '\u03BCm')
