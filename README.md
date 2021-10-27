@@ -4,10 +4,6 @@
 
 This script is used to identify and determine the droplets diameters from pictures of emulsions take at microscope.
 
-## :warning: This script is under development :warning:
-
-I'm developing this script to identify and determine the droplets sizes using the **OpenCV** module. But it is under development yet, so keep it in mind.
-
 ## Input data
 
 The input data is a picture (or a folder with a number of pictures in the future), like the one in Fig. (1).
@@ -29,11 +25,9 @@ Furthermore, it can write a .TXT file with the droplets diameters that were iden
 
 The number of of droplets identified can be optmize by changing the values of "hor_div" and "ver_div" variables in the script, where the variables are the number of divisions in horizontal and vertical direction, respectively. For results showed in Fig. (2) it was used 10 divisions for both variables.
 
-## Future features
+## Solution
 
-When I'm done I hope the script could be capable of:
-
-- Process a bunch of images
+To achieve all results commented above I used the OpenCV and NumPy modules.
 
 ## Future goals
 - Use Machine Learning to do it all alone
