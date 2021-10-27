@@ -6,14 +6,14 @@ This script is used to identify and determine the droplets diameters from pictur
 
 ## Input data
 
-The input data is a picture (or a folder with a number of pictures in the future), like the one in Fig. (1).
+The input data is a picture (or a folder with a number of pictures), like the one in Fig. (1).
 
 <p><img src="https://i.ibb.co/tCx6Cqd/img2.png" height=50%, width=50%/></p>
 <p>Figure 1. Example of input datat.</p>
 
 ## Output data
 
-Currently, the script is capable of identifying droplets using the Hough Circle Transform, like those showed in Fig. (1). The pinkish circles were the droplets identified. Although not all droplets were identified, the script shows some advantages when compared to manual measurements, such as the increase in the number of pictures analysed and minimal observer interference.
+Currently, the script is capable of identifying droplets using the Hough Circle Transform, like those showed in Fig. (1). The pinkish circles are the droplets identified. Although not all droplets were identified, the script shows some advantages when compared to manual measurements, such as the increase in the number of pictures analysed and minimal observer interference.
 
 <p><img src="https://i.ibb.co/yXLtLbC/img2-hordiv10-verdiv10.png" height=50%, width=50%/></p>
 <p>Figure 2. Example of processed image obtained using the script.</p>
