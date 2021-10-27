@@ -1,0 +1,172 @@
+import sys
+import cv2 as cv
+import numpy as np
+
+
+def main(argv):
+    default_file = 'data/img3.png'
+    filename = argv[0] if len(argv) > 0 else default_file
+    # Loads an image
+    src = cv.imread(cv.samples.findFile(filename), cv.IMREAD_COLOR)
+    # Check if image is loaded fine
+    if src is None:
+        print('Error opening image!')
+        print('Usage: hough_circle.py [image_name -- default ' + default_file + '] \n')
+        return -1
+
+    gray = cv.cvtColor(src, cv.COLOR_BGR2GRAY)
+
+    gray = cv.medianBlur(gray, 5)
+
+    rows = gray.shape[0]
+    circles = cv.HoughCircles(gray, cv.HOUGH_GRADIENT, 1, rows / 8,
+                              param1=100, param2=30,
+                              minRadius=1, maxRadius=30)
+
+    if circles is not None:
+        circles = np.uint16(np.around(circles))
+        for i in circles[0, :]:
+            center = (i[0], i[1])
+            # circle center
+            cv.circle(src, center, 1, (0, 100, 100), 3)
+            # circle outline
+            radius = i[2]
+            cv.circle(src, center, radius, (255, 0, 255), 3)
+
+    cv.imshow("detected circles", src)
+    cv.waitKey(0)
+
+    return 0
+
+
+if __name__ == "__main__":
+    main(sys.argv[1:])
+
+##########################################################################################################################################
+
+import cv2 as cv
+import numpy as np
+
+default_file = 'data/img2.png'
+# Loads an image
+src = cv.imread(default_file)
+
+# Convert image to gray scale
+gray = cv.cvtColor(src, cv.COLOR_BGR2GRAY)
+
+# Blur image to reduce noise
+gray = cv.medianBlur(gray, 5)
+
+#cv.imshow("gray", gray)
+#cv.waitKey(0)
+
+height, width = gray.shape[0], gray.shape[1]
+
+# Cut the image in half
+width_cutoff = width // 2
+left1 = gray[:, :width_cutoff]
+right1 = gray[:, width_cutoff:]
+
+image = hconcat(left1,right1)
+cv.imshow("gray", image)
+cv.waitKey(0)
+
+mask = np.zeros(gray.shape[:2], np.uint8)
+
+photo = [left1, right1]
+
+circles = cv.HoughCircles(gray, cv.HOUGH_GRADIENT, 1, height / 8,
+                              param1=100, param2=30,
+                              minRadius=20, maxRadius=200)
+
+if circles is not None:
+    circles = np.uint16(np.around(circles))
+    for i in circles[0, :]:
+        center = (i[0], i[1])
+        # circle center
+        cv.circle(src, center, 1, (0, 100, 100), 3)
+        # circle outline
+        radius = i[2]
+        cv.circle(src, center, radius, (255, 0, 255), 3)
+
+cv.imshow("detected circles", src)
+cv.waitKey(0)
+
+#####################################################################################################
+
+# Importing modules
+
+import cv2 as cv
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Default path to input data and output folder
+
+file_d = 'data/img2.png'
+path_f = 'results/'
+
+# Opening the image
+
+or_image = cv.imread(file_d, cv.COLOR_BGR2RGB)
+
+# Measuring the height and width of original image
+
+height, width = or_image.shape[:2]
+
+# Converting the original BGR image to gray scale
+
+gray = cv.cvtColor(or_image, cv.COLOR_BGR2GRAY)
+
+# Creating a black background plane with the height and width of original image
+
+background = np.zeros([height, width], np.uint8)
+background2 = background.copy()
+image_complete = background.copy()
+
+# Defining the size of the mask
+
+size = [round(height/2), round(width/2)]
+
+# Defining the position to apply the mask
+pos_hor = [0, round(width / 3), round(width / 2),
+           0, round(width / 3), round(width / 2),
+           0, round(width / 3), round(width / 2)]
+
+pos_ver = [0, 0, 0,
+           round(height / 3), round(height / 3), round(height / 3),
+           round(height / 2), round(height / 2), round(height / 2)]
+
+# Identifying circles with Hough Circle Transform for every part of image
+
+i = 0
+for i in range(len(pos_hor)):
+    mask = cv.rectangle(background, (pos_hor[i], pos_ver[i]), (size[1] + pos_hor[i], size[0] + pos_ver[i]), 255, -1)
+    proc_image = cv.bitwise_and(gray, mask)
+    circles = cv.HoughCircles(proc_image, cv.HOUGH_GRADIENT, 1, height / 8,
+                              param1=100, param2=30,
+                              minRadius=1, maxRadius=200)
+
+    # Drawing circles if any number of circles was identified
+
+    if circles is not None:
+        circles = np.uint16(np.around(circles))
+        for i in circles[0, :]:
+            center = (i[0], i[1])
+            # circle center
+            cv.circle(or_image, center, 1, (0, 100, 100), 3)
+            # circle outline
+            radius = i[2]
+            cv.circle(or_image, center, radius, (255, 0, 255), 3)
+
+    background = np.zeros([height, width], np.uint8)
+    i += 1
+    cv.imshow('', or_image)
+    cv.waitKey()
+
+cv.imshow('', or_image)
+cv.waitKey()
+
+
+
+
+
