@@ -6,7 +6,7 @@ from math import isclose
 import time
 import os
 
-savefile = input('Would you like to save the processed images? Type "Y" for "yes", "N" for "no" \n')
+savefile = input('Would you like to save the processed images? Type "y" for "yes", "n" for "no" \n')
 
 print('Start processing...')
 
@@ -25,6 +25,7 @@ path = 'data/'
 # Inform path for output data
 
 path_output = 'results/'
+
 # Inform name for .txt file with droplets diameter
 
 path_f2 = 'OA 50% T80 5,0%'
@@ -64,6 +65,10 @@ for entry in entries:
 
     gray = cv.cvtColor(or_image, cv.COLOR_BGR2GRAY)
 
+    # Image Smoothing - Gaussian Blur
+
+    gray = cv.GaussianBlur(gray,(5,5),cv.BORDER_ISOLATED)
+
     # Creating a black background plane with the height and width of original image
 
     background = np.zeros([height, width], np.uint8)
@@ -72,9 +77,9 @@ for entry in entries:
     # Defining the size of the mask
 
     # Inform the number of divisions (must be greater than 4)
-
-    hor_div = 20
-    ver_div = 20
+    divisions = 30
+    hor_div = divisions
+    ver_div = divisions
 
     # Conversion factor
 
@@ -137,8 +142,8 @@ for entry in entries:
         proc_image = cv.bitwise_and(gray, mask)
 
         circles = cv.HoughCircles(proc_image, cv.HOUGH_GRADIENT, 1, height / 8,
-                                  param1=100, param2=30,
-                                  minRadius=1, maxRadius=200)
+                                  param1=50, param2=30,
+                                  minRadius=5, maxRadius=100)
 
         # Saving circles detected in lists
 
@@ -192,7 +197,7 @@ for entry in entries:
 
     # Saving the image
 
-    if (savefile == 'Y' or savefile == 'y') == True:
+    if (savefile == 'y') == True:
         cv.imwrite(path_f, or_image)
 
     # Stop time counting
@@ -200,8 +205,8 @@ for entry in entries:
     end = time.time()
 
     # Printing info about processed picture
-    print('\nINFO ABOUT PROCESSED PICTURES:')
-    print('\nTime spend:', round(end - start, 2), 's')
+    print('\nPROCESSING INFORMARTION:', entry)
+    print('\nTime spended:', round(end - start, 2), 's')
     print('\nNumber of droplets identified:', len(x1_pos), 'droplets')
     print('\nMaximum diameter:', round(max(diameter),2), '\u03BCm')
     if min(diameter) == 0:
@@ -221,4 +226,4 @@ for element in diameters:
     textfile.write(str(element) + ',')
 
 end_total = time.time()
-print('\nTotal time spend:', round(end_total - start_total, 2), 's')
+print('\nTotal time spended:', round(end_total - start_total, 2), 's')
