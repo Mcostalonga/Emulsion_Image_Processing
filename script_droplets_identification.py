@@ -1,10 +1,45 @@
 # Importing modules
 
-import cv2 as cv
-import numpy as np
-from math import isclose
-import time
 import os
+
+# Used to count time
+
+import time
+
+# Computational Vision module
+
+import cv2 as cv
+
+# Used for scientific computing
+
+import numpy as np
+
+# Used for round up and check if a value is close to other
+
+from math import isclose
+import math
+
+# Used for plot graphs
+
+import matplotlib.pyplot as plt
+
+# Used for format graphs
+
+from matplotlib.ticker import (MultipleLocator)
+
+# Used for write a .xlsx file
+
+import xlsxwriter
+
+# Inform the number of divisions
+
+divisions = 40
+
+# Inform name for .txt file with droplets diameter
+
+path_f2 = 'OA 50% T80 1,0% 6000 rpm 3 min (3)'
+
+# Starting
 
 savefile = input('Would you like to save the processed images? Type "y" for "yes", "n" for "no" \n')
 
@@ -14,24 +49,24 @@ print('Start processing...')
 
 start_total = time.time()
 
-# Creating list for saving droplets diameters
+# Creating list for saving droplets diameter_data
 
-diameters = []
+diameter_data = []
 
-# Inform path for data files
+# Path for input data files
 
 path = 'data/'
 
-# Inform path for output data
+# Path for output data files
 
 path_output = 'results/'
 
-# Inform name for .txt file with droplets diameter
+path_f3 = path_output + path_f2.replace(' ', '_') + '_info.txt'
+path_f4 = path_output + path_f2.replace(' ', '_')
 
-path_f2 = 'OA 50% T80 5,0%'
 path_f2 = path_output + path_f2.replace(' ', '_') + '.txt'
 
-# Reading the data files
+# Reading the input data files
 
 entries = os.listdir(path)
 
@@ -77,7 +112,7 @@ for entry in entries:
     # Defining the size of the mask
 
     # Inform the number of divisions (must be greater than 4)
-    divisions = 30
+
     hor_div = divisions
     ver_div = divisions
 
@@ -143,7 +178,7 @@ for entry in entries:
 
         circles = cv.HoughCircles(proc_image, cv.HOUGH_GRADIENT, 1, height / 8,
                                   param1=50, param2=30,
-                                  minRadius=5, maxRadius=100)
+                                  minRadius=10, maxRadius=75)
 
         # Saving circles detected in lists
 
@@ -172,9 +207,6 @@ for entry in entries:
 
         background = np.zeros([height, width], np.uint8)
         i += 1
-        # Show figure inside "for"
-        #cv.imshow('', or_image)
-        #cv.waitKey()
 
     # Drawing circles if any number of circles was identified
 
@@ -185,11 +217,6 @@ for entry in entries:
         i += 1
 
     diameter = np.array(diameter) * conversion_factor
-
-    # Showing the image with the droplets identified
-
-    #cv.imshow('', or_image)
-    #cv.waitKey()
 
     # Writing the test name
 
@@ -204,9 +231,14 @@ for entry in entries:
 
     end = time.time()
 
-    # Printing info about processed picture
+    # Saving values of diameter
+
+    diameter_data.append(diameter)
+
+    # Printing info about processing
+
     print('\nPROCESSING INFORMARTION:', entry)
-    print('\nTime spended:', round(end - start, 2), 's')
+    print('\nElapsed time:', round(end - start, 2), 's')
     print('\nNumber of droplets identified:', len(x1_pos), 'droplets')
     print('\nMaximum diameter:', round(max(diameter),2), '\u03BCm')
     if min(diameter) == 0:
@@ -215,15 +247,157 @@ for entry in entries:
     else:
         print('\nMinimum diameter:', round(min(diameter), 2), '\u03BCm')
 
-    # Saving values of diameters
+    # Writing info in .txt file
 
-    diameters.append(diameter)
+    with open(path_f3, 'a') as f:
+        print('\nPROCESSING INFORMARTION:', entry, file=f)
+        print('\nElapsed time:', round(end - start, 2), 's', file=f)
+        print('\nNumber of droplets identified:', len(x1_pos), 'droplets', file=f)
+        print('\nMaximum diameter:', round(max(diameter), 2), 'x 10-3 mm', file=f)
+        if min(diameter) == 0:
+            diameter = set(diameter)
+            print('\nMinimum diameter:', round(sorted(diameter)[1], 2), 'x 10-3 mm', file=f)
+        else:
+            print('\nMinimum diameter:', round(min(diameter), 2), 'x 10-3 mm', file=f)
+        print('\n', file=f)
 
-# Saving a file with the droplets diameters
+# Concatenate data to numpy array
 
-textfile = open(path_f2, 'w')
-for element in diameters:
-    textfile.write(str(element) + ',')
+diameter_data = np.concatenate(diameter_data)
+
+# Creating an fixed interval to make future comparisons easier
+
+interval = list(np.arange(5, 200, 5))
+
+# Calculating the relative and cumulative frequency for data
+
+hist, edges = np.histogram(diameter_data, interval)
+rel_freq = (hist / float(hist.sum()))
+rel_freq = rel_freq * 100
+cumulative_freq = np.zeros(len(rel_freq))
+cumulative_freq[0] = 0
+for i in range(len(rel_freq) - 1):
+    cumulative_freq[i + 1] = cumulative_freq[i] + rel_freq[i]
+
+d90_a = 0
+i1 = 0
+while cumulative_freq[i1] <= 90:
+    i1 += 1
+i2 = len(cumulative_freq) - 1
+
+if cumulative_freq[i1] != 90:
+    d90_a = ((cumulative_freq[i1-1] - 90) / (cumulative_freq[i1] - cumulative_freq[i1 - 1])) * (
+            interval[i1] - interval[i1 - 1]) + interval[i1 - 1]
+else:
+    d90_a = interval[i1]
+
+yd90 = [0, 100]
+d90 = [d90_a, d90_a]
+
+info = ('Column info', '1st - Droplet Diameter', '2nd - Interval', '3rd - Relative Frequency',
+        '4th - Cumulative Frequency', '5th - Y to plot d 90', '6th - Value of d90')
+
+# Writing data into .xlsx file
+
+workbook = xlsxwriter.Workbook(path_f4 + '.xlsx')
+worksheet = workbook.add_worksheet()
+Line = 0
+Column = 0
+ProcData = [diameter_data[diameter_data != 0], interval, rel_freq, cumulative_freq, yd90, d90, info]
+while Column < len(ProcData):
+    for item in ProcData[Column]:
+        worksheet.write(Line, Column, item)
+        Line += 1
+    Column += 1
+    Line = 0
+workbook.close()
+
+# Plotting results
+
+fig, ax = plt.subplots(figsize=(8, 6))
+barchart = plt.bar(interval[:-1], rel_freq, width=5.0, align='edge', ec='k', alpha=0.7,
+                   color=(0, 0, 1), label='Droplet size distribution')
+
+ax2 = plt.twinx()
+linechart, = plt.plot(interval[:-1], cumulative_freq, color=(0, 0, 0), label='Cumulative Frequency')
+d90chart, = plt.plot(d90, yd90, '--', color=(0.4, 0.4, 0.4), label='d\u2089\u2080')
+color_d90chart = d90chart.get_color()
+
+# Legend
+
+legends = barchart, linechart
+labels = [item.get_label() for item in legends]
+ax.legend(legends, labels, loc='center right')
+
+d90_a = d90[0]
+d90_a = '{0:.3f}'.format(d90_a)
+ax2.text(d90[0] + 0.5, 80, '\u2190d\u2089\u2080 = ' + d90_a
+         + ' \u03BCm', color=color_d90chart, font='Times New Roman', fontsize=12)
+
+# Title
+
+ax.set_title('Droplet Size Distribution and d\u2089\u2080', font='Times New Roman', fontsize=14, fontweight='bold')
+
+# Formatting axes, labels, lines, tickmarks, gridlines
+
+# X axis
+
+ax.set_xlabel('Droplet Diameter [\u03BCm]', font='Times New Roman', fontsize=12, fontweight='bold')
+ax.set_xlim([0, 250])
+
+# Y axis - left
+
+ax.set_ylabel('Relative Frequency [%]', font='Times New Roman', fontsize=12, fontweight='bold')
+ax.set_ylim(0, math.ceil(max(rel_freq)))
+
+# Y axis - right
+
+ax2.set_ylabel('Cumulative Frequency [%]', font='Times New Roman', fontsize=12, fontweight='bold')
+ax2.set_ylim(0, 100)
+
+# Tickmarks positioning
+
+ax.xaxis.set_ticks_position('both')
+ax.tick_params(which='major', width=1.50, length=5, direction='in')
+ax.tick_params(which='minor', width=1.5, length=3, labelsize=10, direction='in')
+ax2.tick_params(which='major', width=1.50, length=5, direction='in')
+ax2.tick_params(which='minor', width=1.5, length=3, labelsize=10, direction='in')
+
+# Adding minor tickmarks
+
+# X axis
+
+ax.xaxis.set_minor_locator(MultipleLocator(5))
+
+# Y axis - left
+
+ax.yaxis.set_minor_locator(MultipleLocator(0.5))
+
+# Y axis - right
+
+ax2.yaxis.set_minor_locator(MultipleLocator(5))
+
+# Label font and size
+
+plt.setp(ax.get_xticklabels(), font='Times New Roman', fontsize=12)
+plt.setp(ax.get_yticklabels(), font='Times New Roman', fontsize=12)
+plt.yticks(font='Times New Roman', fontsize=12)
+
+# Setting the line width to axes
+
+for axis in ['top', 'bottom', 'left', 'right']:
+    ax.spines[axis].set_linewidth(1.5)
+
+# Saving the figure at path informed
+
+plt.savefig(path_f4 + '.png', format='png', dpi=200)
+
+# Stop counting total time elapsed
 
 end_total = time.time()
-print('\nTotal time spended:', round(end_total - start_total, 2), 's')
+
+# Printing processing info
+
+print('\nNumber of photos analysed:', len(entries))
+
+print('\nTotal elapsed time:', round(end_total - start_total, 2), 's')

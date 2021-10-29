@@ -1,0 +1,132 @@
+
+PROCESSING INFORMARTION: Snap-129.png
+
+Elapsed time: 140.3 s
+
+Number of droplets identified: 193 droplets
+
+Maximum diameter: 64.98 x 10-3 mm
+
+Minimum diameter: 15.88 x 10-3 mm
+
+
+
+PROCESSING INFORMARTION: Snap-130.png
+
+Elapsed time: 140.21 s
+
+Number of droplets identified: 133 droplets
+
+Maximum diameter: 57.76 x 10-3 mm
+
+Minimum diameter: 15.88 x 10-3 mm
+
+
+
+PROCESSING INFORMARTION: Snap-131.png
+
+Elapsed time: 138.51 s
+
+Number of droplets identified: 148 droplets
+
+Maximum diameter: 60.65 x 10-3 mm
+
+Minimum diameter: 14.44 x 10-3 mm
+
+
+
+PROCESSING INFORMARTION: Snap-132.png
+
+Elapsed time: 139.1 s
+
+Number of droplets identified: 206 droplets
+
+Maximum diameter: 75.09 x 10-3 mm
+
+Minimum diameter: 14.44 x 10-3 mm
+
+
+
+PROCESSING INFORMARTION: Snap-133.png
+
+Elapsed time: 137.63 s
+
+Number of droplets identified: 195 droplets
+
+Maximum diameter: 73.65 x 10-3 mm
+
+Minimum diameter: 15.88 x 10-3 mm
+
+
+
+PROCESSING INFORMARTION: Snap-134.png
+
+Elapsed time: 138.78 s
+
+Number of droplets identified: 212 droplets
+
+Maximum diameter: 69.31 x 10-3 mm
+
+Minimum diameter: 15.88 x 10-3 mm
+
+
+
+PROCESSING INFORMARTION: Snap-135.png
+
+Elapsed time: 139.33 s
+
+Number of droplets identified: 219 droplets
+
+Maximum diameter: 105.42 x 10-3 mm
+
+Minimum diameter: 15.88 x 10-3 mm
+
+
+
+PROCESSING INFORMARTION: Snap-136.png
+
+Elapsed time: 144.55 s
+
+Number of droplets identified: 211 droplets
+
+Maximum diameter: 86.64 x 10-3 mm
+
+Minimum diameter: 15.88 x 10-3 mm
+
+
+
+PROCESSING INFORMARTION: Snap-137.png
+
+Elapsed time: 145.38 s
+
+Number of droplets identified: 232 droplets
+
+Maximum diameter: 90.97 x 10-3 mm
+
+Minimum diameter: 14.44 x 10-3 mm
+
+
+
+PROCESSING INFORMARTION: Snap-139.png
+
+Elapsed time: 150.64 s
+
+Number of droplets identified: 227 droplets
+
+Maximum diameter: 76.53 x 10-3 mm
+
+Minimum diameter: 15.88 x 10-3 mm
+
+
+
+PROCESSING INFORMARTION: Snap-140.png
+
+Elapsed time: 145.05 s
+
+Number of droplets identified: 225 droplets
+
+Maximum diameter: 95.31 x 10-3 mm
+
+Minimum diameter: 15.88 x 10-3 mm
+
+
