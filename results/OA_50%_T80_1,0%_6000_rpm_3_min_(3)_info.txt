@@ -1,5 +1,5 @@
 
-PROCESSING INFORMARTION: Snap-129.png
+PROCESSING INFORMATION: Snap-129.png
 
 Elapsed time: 140.3 s
 
@@ -11,7 +11,7 @@ Minimum diameter: 15.88 x 10-3 mm
 
 
 
-PROCESSING INFORMARTION: Snap-130.png
+PROCESSING INFORMATION: Snap-130.png
 
 Elapsed time: 140.21 s
 
@@ -23,7 +23,7 @@ Minimum diameter: 15.88 x 10-3 mm
 
 
 
-PROCESSING INFORMARTION: Snap-131.png
+PROCESSING INFORMATION: Snap-131.png
 
 Elapsed time: 138.51 s
 
@@ -128,5 +128,29 @@ Number of droplets identified: 225 droplets
 Maximum diameter: 95.31 x 10-3 mm
 
 Minimum diameter: 15.88 x 10-3 mm
+
+
+
+PROCESSING INFORMATION: Snap-129.png
+
+Elapsed time: 2.21 s
+
+Number of droplets identified: 74 droplets
+
+Maximum diameter: 106.86 x 10-3 mm
+
+Minimum diameter: 20.22 x 10-3 mm
+
+
+
+PROCESSING INFORMATION: Snap-129.png
+
+Elapsed time: 2.11 s
+
+Number of droplets identified: 74 droplets
+
+Maximum diameter: 106.86 x 10-3 mm
+
+Minimum diameter: 20.22 x 10-3 mm
 
 
