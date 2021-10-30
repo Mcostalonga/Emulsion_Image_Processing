@@ -102,7 +102,7 @@ for entry in entries:
 
     # Image Smoothing - Gaussian Blur
 
-    gray = cv.GaussianBlur(gray,(5,5),cv.BORDER_ISOLATED)
+    gray = cv.GaussianBlur(gray, (5, 5), cv.BORDER_ISOLATED)
 
     # Creating a black background plane with the height and width of original image
 
@@ -122,7 +122,7 @@ for entry in entries:
 
     size = [round(height / (ver_div - 1)), round(width / (hor_div - 1))]
 
-    # Calculanting the size of the step
+    # Calculating the size of the step
 
     step_height = height/ver_div - (1/(ver_div**2)) * height/ver_div
     step_width = width/hor_div - (1/(hor_div**2)) * width/hor_div
@@ -171,8 +171,8 @@ for entry in entries:
     for i in range(len(hor_pos)):
         # color specified the color of border line of rectangle to be draw
         # if thickness = -1 px will fill the rectangle shape by the specified color
-        mask = cv.rectangle(background,(hor_pos[i], ver_pos[i]), (size[1] + hor_pos[i], size[0] + ver_pos[i]),
-                            color=(255,255,255), thickness=-1)
+        mask = cv.rectangle(background, (hor_pos[i], ver_pos[i]), (size[1] + hor_pos[i], size[0] + ver_pos[i]),
+                            color=(255, 255, 255), thickness=-1)
 
         proc_image = cv.bitwise_and(gray, mask)
 
@@ -189,14 +189,14 @@ for entry in entries:
             for i in circles[0, :]:
 
                 for item in x1_pos:
-                    if isclose(i[0], item, rel_tol=0.005, abs_tol=0) == True:
+                    if isclose(i[0], item, rel_tol=0.005, abs_tol=0):
                         contx += 1
 
                 for item in y1_pos:
-                    if isclose(i[1], item, rel_tol=0.005, abs_tol=0) == True:
+                    if isclose(i[1], item, rel_tol=0.005, abs_tol=0):
                         conty += 1
 
-                if (contx == 0 and conty == 0) == True:
+                if contx == 0 and conty == 0:
                     diameter.append(i[2] * 2)
                     x1_pos.append(i[0])
                     y1_pos.append(i[1])
@@ -211,9 +211,9 @@ for entry in entries:
     # Drawing circles if any number of circles was identified
 
     for i in range(len(x1_pos)):
-        cv.circle(or_image, (int(x1_pos[i]),int(y1_pos[i])), 1, (0, 100, 100), 3)
+        cv.circle(or_image, (int(x1_pos[i]), int(y1_pos[i])), 1, (0, 100, 100), 3)
         # circle outline
-        cv.circle(or_image, (int(x1_pos[i]),int(y1_pos[i])), int((diameter[i]/2)), (255, 0, 255), 3)
+        cv.circle(or_image, (int(x1_pos[i]), int(y1_pos[i])), int((diameter[i]/2)), (255, 0, 255), 3)
         i += 1
 
     diameter = np.array(diameter) * conversion_factor
@@ -224,7 +224,7 @@ for entry in entries:
 
     # Saving the image
 
-    if (savefile == 'y') == True:
+    if savefile == 'y':
         cv.imwrite(path_f, or_image)
 
     # Stop time counting
@@ -237,20 +237,20 @@ for entry in entries:
 
     # Printing info about processing
 
-    print('\nPROCESSING INFORMARTION:', entry)
+    print('\nPROCESSING INFORMATION:', entry)
     print('\nElapsed time:', round(end - start, 2), 's')
     print('\nNumber of droplets identified:', len(x1_pos), 'droplets')
-    print('\nMaximum diameter:', round(max(diameter),2), '\u03BCm')
+    print('\nMaximum diameter:', round(max(diameter), 2), '\u03BCm')
     if min(diameter) == 0:
         diameter = set(diameter)
-        print('\nMinimum diameter:', round(sorted(diameter)[1],2), '\u03BCm')
+        print('\nMinimum diameter:', round(sorted(diameter)[1], 2), '\u03BCm')
     else:
         print('\nMinimum diameter:', round(min(diameter), 2), '\u03BCm')
 
     # Writing info in .txt file
 
     with open(path_f3, 'a') as f:
-        print('\nPROCESSING INFORMARTION:', entry, file=f)
+        print('\nPROCESSING INFORMATION:', entry, file=f)
         print('\nElapsed time:', round(end - start, 2), 's', file=f)
         print('\nNumber of droplets identified:', len(x1_pos), 'droplets', file=f)
         print('\nMaximum diameter:', round(max(diameter), 2), 'x 10-3 mm', file=f)
