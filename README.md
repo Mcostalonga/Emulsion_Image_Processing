@@ -29,6 +29,8 @@ Furthermore, it can write a .TXT file with information about processing for ever
 - Number of droplets identified
 - Maximum and minimum diameter of droplets
 
+To obtain diameters values in real world dimensions you must inform the "conversion_factor" variable. In this script the "conversion_factor" variable is informed in &mu;m/px. 
+
 <p><img src="https://i.ibb.co/JHKXY8n/image.png" height=50%, width=50%/></p>
 <p>Figure 4. Example of text file with processing information.</p>
 
