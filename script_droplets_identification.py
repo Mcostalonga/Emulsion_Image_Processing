@@ -16,7 +16,6 @@ import numpy as np
 
 # Used for round up and check if a value is close to other
 
-from math import isclose
 import math
 
 # Used for plot graphs

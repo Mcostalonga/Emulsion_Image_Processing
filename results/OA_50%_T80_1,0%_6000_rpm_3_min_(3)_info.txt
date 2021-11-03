@@ -82,3 +82,27 @@ Maximum diameter: 116.31 x 10-3 mm
 Minimum diameter: 21.15 x 10-3 mm
 
 
+
+PROCESSING INFORMATION: Snap-129.png
+
+Elapsed time: 0.36 s
+
+Number of droplets identified: 477 droplets
+
+Maximum diameter: 116.31 x 10-3 mm
+
+Minimum diameter: 21.15 x 10-3 mm
+
+
+
+PROCESSING INFORMATION: Snap-129.png
+
+Elapsed time: 0.33 s
+
+Number of droplets identified: 477 droplets
+
+Maximum diameter: 116.31 x 10-3 mm
+
+Minimum diameter: 21.15 x 10-3 mm
+
+
