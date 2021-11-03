@@ -33,7 +33,20 @@ import xlsxwriter
 
 # Inform the number of divisions
 
-divisions = 40
+divisions = 1
+
+# Resize image by percentage of width and height
+
+percent = 50
+
+# Max and Min radius for droplets in px
+
+max_radius = 35
+min_radius = 1
+
+# Conversion factor
+
+factor = 0.8811
 
 # Inform name for .txt file with droplets diameter
 
@@ -94,15 +107,24 @@ for entry in entries:
 
     # Measuring the height and width of original image
 
-    height, width = or_image.shape[:2]
+    height_or, width_or = or_image.shape[:2]
+
+    # Resizing
+
+    dim = (int(width_or * percent / 100), int(height_or * percent / 100))
+    img_resize = cv.resize(or_image, dim, interpolation = cv.INTER_AREA)
+
+    # Measuring the height and width of resized image
+
+    height, width = img_resize.shape[:2]
 
     # Converting the original BGR image to gray scale
 
-    gray = cv.cvtColor(or_image, cv.COLOR_BGR2GRAY)
+    gray = cv.cvtColor(img_resize, cv.COLOR_BGR2GRAY)
 
     # Image Smoothing - Gaussian Blur
 
-    gray = cv.GaussianBlur(gray, (5, 5), cv.BORDER_ISOLATED)
+    gray = cv.blur(gray, (5, 5))
 
     # Creating a black background plane with the height and width of original image
 
@@ -116,19 +138,14 @@ for entry in entries:
     hor_div = divisions
     ver_div = divisions
 
-    # Conversion factor
+    conversion_factor = factor / (percent / 100)
 
-    conversion_factor = 200/277
-
-    size = [round(height / (ver_div - 1)), round(width / (hor_div - 1))]
+    size = [round(height / (ver_div)), round(width / (hor_div))]
 
     # Calculating the size of the step
 
-    step_height = height/ver_div - (1/(ver_div**2)) * height/ver_div
-    step_width = width/hor_div - (1/(hor_div**2)) * width/hor_div
-
-    step_height = int(step_height)
-    step_width = int(step_width)
+    step_height = int(height / ver_div)
+    step_width = int(width / hor_div)
 
     # Declaring variables
 
@@ -176,9 +193,9 @@ for entry in entries:
 
         proc_image = cv.bitwise_and(gray, mask)
 
-        circles = cv.HoughCircles(proc_image, cv.HOUGH_GRADIENT, 1, height / 8,
-                                  param1=50, param2=30,
-                                  minRadius=10, maxRadius=75)
+        circles = cv.HoughCircles(proc_image, cv.HOUGH_GRADIENT, 1, 10,
+                                  param1=100, param2=30,
+                                  minRadius=min_radius, maxRadius=max_radius)
 
         # Saving circles detected in lists
 
@@ -187,23 +204,9 @@ for entry in entries:
             circles = np.uint16(np.around(circles))
 
             for i in circles[0, :]:
-
-                for item in x1_pos:
-                    if isclose(i[0], item, rel_tol=0.005, abs_tol=0):
-                        contx += 1
-
-                for item in y1_pos:
-                    if isclose(i[1], item, rel_tol=0.005, abs_tol=0):
-                        conty += 1
-
-                if contx == 0 and conty == 0:
-                    diameter.append(i[2] * 2)
-                    x1_pos.append(i[0])
-                    y1_pos.append(i[1])
-                    contx = 0
-                    conty = 0
-                contx = 0
-                conty = 0
+                diameter.append(i[2] * 2)
+                x1_pos.append(i[0])
+                y1_pos.append(i[1])
 
         background = np.zeros([height, width], np.uint8)
         i += 1
@@ -211,21 +214,21 @@ for entry in entries:
     # Drawing circles if any number of circles was identified
 
     for i in range(len(x1_pos)):
-        cv.circle(or_image, (int(x1_pos[i]), int(y1_pos[i])), 1, (0, 100, 100), 3)
+        cv.circle(img_resize, (int(x1_pos[i]), int(y1_pos[i])), 1, (0, 0, 0), 2)
         # circle outline
-        cv.circle(or_image, (int(x1_pos[i]), int(y1_pos[i])), int((diameter[i]/2)), (255, 0, 255), 3)
+        cv.circle(img_resize, (int(x1_pos[i]), int(y1_pos[i])), int((diameter[i]/2)), (255, 0, 255), 2)
         i += 1
 
     diameter = np.array(diameter) * conversion_factor
 
     # Writing the test name
 
-    path_f = 'results/' + test_name + '_hordiv' + str(hor_div) + '_verdiv' + str(ver_div) + '.png'
+    path_f = 'results/' + test_name + '_' + str(divisions**2) + '_div' + '.png'
 
     # Saving the image
 
     if savefile == 'y':
-        cv.imwrite(path_f, or_image)
+        cv.imwrite(path_f, img_resize)
 
     # Stop time counting
 
