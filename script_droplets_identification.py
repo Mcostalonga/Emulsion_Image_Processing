@@ -36,7 +36,7 @@ divisions = 1
 
 # Resize image by percentage of width and height
 
-percent = 50
+percent = 70
 
 # Max and Min radius for droplets in px
 
@@ -64,6 +64,7 @@ start_total = time.time()
 # Creating list for saving droplets diameter_data
 
 diameter_data = []
+droplets = 0
 
 # Path for input data files
 
@@ -249,6 +250,8 @@ for entry in entries:
     else:
         print('\nMinimum diameter:', round(min(diameter), 2), '\u03BCm')
 
+    droplets = droplets + len(x1_pos)
+
     # Writing info in .txt file
 
     with open(path_f3, 'a') as f:
@@ -338,14 +341,19 @@ ax2.text(d90[0] + 0.5, 80, '\u2190d\u2089\u2080 = ' + d90_a
 
 # Title
 
-ax.set_title('Droplet Size Distribution and d\u2089\u2080', font='Times New Roman', fontsize=14, fontweight='bold')
+ax.set_title('Droplet Size Distribution and d\u2089\u2080',
+             font='Times New Roman', fontsize=14, fontweight='bold')
+
+# Writing the number of droplets identified
+plt.gcf().text(0.65, 0.84, 'Number of droplets: ' + str(droplets), fontsize=10, color=(0, 0, 1))
+
 
 # Formatting axes, labels, lines, tickmarks, gridlines
 
 # X axis
 
 ax.set_xlabel('Droplet Diameter [\u03BCm]', font='Times New Roman', fontsize=12, fontweight='bold')
-ax.set_xlim([0, 250])
+ax.set_xlim([0, 160])
 
 # Y axis - left
 
@@ -403,3 +411,8 @@ end_total = time.time()
 print('\nNumber of photos analysed:', len(entries))
 
 print('\nTotal elapsed time:', round(end_total - start_total, 2), 's')
+
+with open(path_f3, 'a') as f:
+    print('\nNumber of photos analysed:', len(entries), file=f)
+    print('\nTotal elapsed time:', round(end_total - start_total, 2), 's', file=f)
+    print('\nNumber of droplets identified (all photos):', droplets, 'droplets', file=f)
