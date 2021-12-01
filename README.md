@@ -18,7 +18,7 @@ Currently, the script is capable of identifying droplets using the Hough Transfo
 <p><img src="https://i.ibb.co/DVNsBf5/image.png" height=50%, width=50%/></p>
 <p>Figure 2. Example 1 of processed image obtained using the script.</p>
 
-<p><img src="https://i.ibb.co/QYJSV2L/image.png" height=50%, width=50%/></p>
+<p><img src="https://i.ibb.co/6mdbHPt/image.png" height=50%, width=50%/></p>
 <p>Figure 3. Example 2 of processed image obtained using the script.</p>
 
 Furthermore, it can write a .TXT file with information about processing for every photo, Fig. (4). For every picture, even though you choose to save the processed pictures or not, you get the following information on that file:
