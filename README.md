@@ -49,4 +49,4 @@ The output data values of diameters, intervals, relative and cumulative frequenc
 To achieve all results commented above I used the OpenCV, NumPy, Math, Time, Matplotlib and Xlsxwriter modules.
 
 ## Future goals
-- Use Machine Learning to identify and measure droplets
+- Use AI to identify and measure droplets
